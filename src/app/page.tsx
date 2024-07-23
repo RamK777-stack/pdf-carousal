@@ -1,79 +1,163 @@
 'use client'
 
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { toJpeg } from 'html-to-image';
+import jsPDF from 'jspdf';
 
 export default function Home() {
 
-  const downloadImage = () => {
+  const downloadImage = async () => {
+    debugger
     const elements = document.getElementsByClassName('slide-div');
-    const pdf = new jsPDF({ unit: 'px', format: [1080, 1080] }); // use 180 180 for small size
-    let promises: Promise<void>[] = [];
+    const pdf = new jsPDF({ unit: 'px', format: [540, 540] });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-    Array.from(elements).forEach((element, index) => {
-      // Apply CSS styles to the element
-      (element as HTMLElement).style.borderRadius = '0px'; // Just an example, usually you'd want to set a specific background
-      const h2 = element.querySelector('h2')
-      const h5 = element.querySelector('h5')
-      if (h2) {
-        h2.style.fontSize = '3rem'
+    for (let index = 0; index < elements.length; index++) {
+      const element = elements[index] as HTMLElement;
+
+      // Remove border radius for clean export
+      element.style.borderRadius = '0px';
+
+      try {
+        const dataUrl = await toJpeg(element, { quality: 1, pixelRatio: 2 });
+        const img = new Image();
+        img.src = dataUrl;
+
+        await new Promise((resolve) => {
+          img.onload = () => {
+            if (index > 0) {
+              pdf.addPage([pageWidth, pageHeight], 'p');
+            }
+
+            // Adjust image dimensions to fit within the page
+            pdf.addImage(dataUrl, 'JPEG', 0, 0, pageWidth, pageHeight);
+            resolve(null);
+          };
+        });
+      } catch (error) {
+        console.error('Error capturing screenshot:', error);
       }
-      if (h5) {
-        h5.style.fontSize = '1.25rem'
-      }
+    }
 
-      promises.push(
-        toJpeg(element as HTMLElement, { quality: 1, pixelRatio: 3 }) // Adjust options as needed
-          .then((dataUrl) => {
-            // var link = document.createElement('a');
-            // link.download = 'my-image-name.jpeg';
-            // link.href = dataUrl;
-            // link.click();
-            const img = new Image();
-            img.src = dataUrl;
-            img.onload = () => {
-              debugger
-              const imgWidth = 1080;
-              const imgHeight = (img.height * imgWidth) / img.width;
-              if (index > 0) {
-                pdf.addPage();
-              }
-              pdf.addImage(dataUrl, 'JPEG', 0, 0, imgWidth, imgHeight);
-              if (index === elements.length - 1) {
-                pdf.save('document.pdf'); // Save or handle the PDF file after last image
-              }
-            };
-          })
-          .catch((error) => {
-            console.error('Error capturing screenshot:', error);
-          })
-      );
-    });
-
+    pdf.save('document.pdf');
   }
 
+  const slides = [
+    {
+      title: "Exploring Next.js",
+      subtitle: "An Overview",
+      points: []
+    },
+    {
+      title: "Exploring Next.js New Features",
+      subtitle: "Discover the latest enhancements in Next.js",
+      points: [
+        "Improved Performance",
+        "New Data Fetching Methods",
+        "Enhanced Development Experience",
+        "Optimized Static Site Generation",
+        "Better Image Optimization",
+        "Advanced Routing Capabilities"
+      ]
+    },
+    {
+      title: "Next.js Performance Boost",
+      subtitle: "How Next.js improves application performance",
+      points: [
+        "Automatic Code Splitting",
+        "Server-Side Rendering",
+        "Static Site Generation",
+        "Incremental Static Regeneration",
+        "Efficient Image Loading",
+        "Optimized Build Size"
+      ]
+    },
+    {
+      title: "Next.js Data Fetching",
+      subtitle: "Modern ways to fetch data in Next.js",
+      points: [
+        "getStaticProps",
+        "getServerSideProps",
+        "getStaticPaths",
+        "API Routes",
+        "Dynamic Imports",
+        "SWC for Fast Refresh"
+      ]
+    },
+    {
+      title: "Next.js Development Experience",
+      subtitle: "Tools and features for developers",
+      points: [
+        "Fast Refresh",
+        "TypeScript Support",
+        "Customizable Babel Config",
+        "Integrated ESLint",
+        "File-System Routing",
+        "Hot Module Replacement"
+      ]
+    },
+    {
+      title: "Next.js Deployment",
+      subtitle: "Deploying Next.js applications",
+      points: [
+        "Vercel Integration",
+        "Serverless Functions",
+        "Static Export",
+        "Multi-Zone Support",
+        "Environment Variables",
+        "Custom Server Support"
+      ]
+    },
+    {
+      title: "Conclusion",
+      subtitle: "Key Takeaways",
+      points: [
+        "Next.js provides advanced features and performance enhancements.",
+        "It offers multiple data fetching methods tailored for different needs.",
+        "Development experience is significantly improved with built-in tools.",
+        "Deployment is seamless with integrations like Vercel.",
+        "Next.js is a powerful framework for building modern web applications."
+      ]
+    }
+  ];
+
   return (
-    <main className="flex min-h-screen flex-col px-4 py-2 lg:px-24 lg:py-12 bg-slate-200">
+    <main className="flex flex-col min-h-screen px-4 py-2 md:px-6 md:py-6 lg:px-24 lg:py-12 bg-slate-200">
       <div className="flex justify-end">
-        <button className="bg-blue-200 p-2 space-x-3 space-y-1 rounded"
+        <button className="bg-blue-200 p-2 space-x-3 space-y-1 rounded cursor-pointer"
           onClick={downloadImage}>Download</button>
       </div>
-      <div className="grid lg:grid-cols-2 grid-rows-2 px-2 lg:px-10 gap-5" id="grid">
-        <div className="h-100 bg-white rounded-md p-4 justify-center">
-          <div className='slide-div'>
-            <div style={{
-              backgroundImage: `url('/assets/bg-5.svg')`,
-              backgroundSize: 'cover', // Ensures the background image covers the entire container
-              backgroundPosition: 'center', // Centers the background image
-            }}
-              className="h-full flex flex-col px-2 lg:px-10 space-y-4 text-white justify-center rounded-sm aspect-[1/1] bg-no-repeat">
-              <h2 className="text-3xl lg:text-5xl">Exploring Next.js New Features</h2>
-              <h5 className="text-xl text-zinc-400">Discover the latest enhancements in Next.js</h5>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-2 lg:p-10" id="grid">
+        <div className="slide-parent flex flex-col space-y-10 overflow-y-auto bg-white rounded-md p-2 lg:p-5 h-[calc(75vh-2rem)]">
+          {slides.map((slide, index) => (
+            <div key={index}>
+              <div className='slide-div'>
+                <div
+                  style={{
+                    backgroundImage: `url('/assets/new-book.png')`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                  className="h-[80vh] lg:h-[70vh] flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
+                >
+                  <div className='flex flex-col justify-center p-10 h-full'>
+                    <h2 className="text-xl lg:text-2xl text-[#333333] font-serif font-extrabold">{slide.title}</h2>
+                    <h5 className="text-lg lg:text-lg text-[#333333] mt-1 font-serif font-semibold">{slide.subtitle}</h5>
+                    <ul className="space-y-3 mt-4 lg:mt-6 text-[#333333] font-serif">
+                      {slide.points.map((point, idx) => (
+                        <li key={idx}>➢ {point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-        <div className="border border-zinc-300 h-100">Settings</div>
+
+        <div className="border border-zinc-300 p-5 h-[calc(75vh-2rem)]">
+          <h4 className='text-lg lg:text-xl'>Settings</h4>
+        </div>
       </div>
     </main>
   );

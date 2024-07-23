@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# LinkedIn Carousel Generator
 
-## Getting Started
+Welcome to the **LinkedIn Carousel Generator**! This app is designed to help you create visually appealing PDF carousels for LinkedIn posts. Built with Next.js, this tool allows you to generate professional carousels easily.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Create multi-page PDF carousels
+- Customize content and design for each slide
+- Download the generated PDF for LinkedIn posting
+- Responsive design to ensure compatibility across devices
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To get started with the LinkedIn Carousel Generator, follow these steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. **Clone the repository:**
 
-## Learn More
+   
+    git clone https://github.com/yourusername/linkedin-carousel-generator.git
+   
 
-To learn more about Next.js, take a look at the following resources:
+2. **Navigate to the project directory:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   
+    cd linkedin-carousel-generator
+   
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. **Install the dependencies:**
 
-## Deploy on Vercel
+   
+    npm install
+   
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Start the development server:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+   
+    npm run dev
+   
+
+Your app should now be running on [http://localhost:3000](http://localhost:3000).
+
+## Usage
+
+1. Open the application in your browser.
+2. Create a new carousel project.
+3. Customize each slide using the available tools.
+4. Once you're satisfied with your carousel, click the "Generate PDF" button.
+5. Download the PDF and it's ready for LinkedIn!
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+Happy creating!

@@ -1,0 +1,14 @@
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #dddddd; /* Color of the scrollbar handle */
+    border-radius: 5px; /* Border radius of the handle */
+  }
+  
