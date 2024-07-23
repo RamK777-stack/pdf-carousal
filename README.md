@@ -22,7 +22,7 @@ To get started with the LinkedIn Carousel Generator, follow these steps:
 2. **Navigate to the project directory:**
 
    
-    cd linkedin-carousel-generator
+    cd pdf-carousal
    
 
 3. **Install the dependencies:**
