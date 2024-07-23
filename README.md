@@ -16,7 +16,7 @@ To get started with the LinkedIn Carousel Generator, follow these steps:
 1. **Clone the repository:**
 
    
-    git clone https://github.com/yourusername/linkedin-carousel-generator.git
+    git clone https://github.com/RamK777-stack/pdf-carousal.git
    
 
 2. **Navigate to the project directory:**
