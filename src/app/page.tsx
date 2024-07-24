@@ -2,6 +2,7 @@
 
 import { toJpeg } from 'html-to-image';
 import jsPDF from 'jspdf';
+import PdfGeneratorSettings from './components/PdfGeneratorSettings';
 
 export default function Home() {
 
@@ -122,13 +123,13 @@ export default function Home() {
   ];
 
   return (
-    <main className="flex flex-col min-h-screen px-4 py-2 md:px-6 md:py-6 lg:px-24 lg:py-12 bg-slate-200">
-      <div className="flex justify-end">
+    <main className="flex flex-col min-h-screen px-4 py-2 md:px-6 md:py-2 lg:px-12 lg:py-6 bg-slate-200 justify-center">
+      {/* <div className="flex justify-end">
         <button className="bg-blue-200 p-2 space-x-3 space-y-1 rounded cursor-pointer"
           onClick={downloadImage}>Download</button>
-      </div>
+      </div> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-2 lg:p-10" id="grid">
-        <div className="slide-parent flex flex-col space-y-10 overflow-y-auto bg-white rounded-md p-2 lg:p-5 h-[calc(75vh-2rem)]">
+        <div className="slide-parent flex flex-col space-y-10 overflow-y-auto bg-white rounded-md p-2 lg:p-4 h-[calc(82vh-2rem)]">
           {slides.map((slide, index) => (
             <div key={index}>
               <div className='slide-div'>
@@ -155,8 +156,8 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="border border-zinc-300 p-5 h-[calc(75vh-2rem)]">
-          <h4 className='text-lg lg:text-xl'>Settings</h4>
+        <div className="h-[calc(82vh-2rem)]">
+          <PdfGeneratorSettings />
         </div>
       </div>
     </main>
