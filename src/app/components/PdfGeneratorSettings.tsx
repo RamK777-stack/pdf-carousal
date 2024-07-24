@@ -6,7 +6,8 @@ import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
 import { Input } from "@/app/components/ui/input";
 import { Switch } from "@/app/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
-import { DownloadIcon } from '@radix-ui/react-icons'
+import { Button } from "@/app/components/ui/button";
+import { Download } from "lucide-react";
 
 const colorOptions = [
     '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
@@ -55,10 +56,10 @@ const PdfGeneratorSettings = () => {
                     <h3 className='text-xl font-semibold'>PDF Generator Settings </h3>
                     <h5 className='text-sm text-gray-600'>Customize your carousel PDF output</h5>
                 </div>
-                <div className='flex space-x-2 items-center h-auto bg-gray-100 px-3 py-1 rounded-md cursor-pointer'>
-                    <p>Download</p>
-                    <DownloadIcon className='h-4 w-4' />
-                </div>
+                <Button variant="outline" size="sm">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                </Button>
             </div>
 
             <Tabs defaultValue="background" className='space-y-5'>
