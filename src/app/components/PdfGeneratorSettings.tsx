@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
 import { Input } from "@/app/components/ui/input";
 import { Switch } from "@/app/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
+import { DownloadIcon } from '@radix-ui/react-icons'
 
 const colorOptions = [
     '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
@@ -48,11 +49,18 @@ const PdfGeneratorSettings = () => {
     const [selectedSocialMedia, setSelectedSocialMedia] = useState('');
 
     return (
-        <div className="flex flex-col h-full w-full p-5 bg-white rounded">
-            <div className='space-y-1 mb-5'>
-                <h3 className='text-2xl font-semibold'>PDF Generator Settings</h3>
-                <h5 className='text-gray-700'>Customize your carousel PDF output</h5>
+        <div className="flex flex-col h-full w-full p-5 bg-white rounded overflow-y-auto">
+            <div className='flex justify-between items-start'>
+                <div className='space-y-1 mb-5'>
+                    <h3 className='text-xl font-semibold'>PDF Generator Settings </h3>
+                    <h5 className='text-sm text-gray-600'>Customize your carousel PDF output</h5>
+                </div>
+                <div className='flex space-x-2 items-center h-auto bg-gray-100 px-3 py-1 rounded-md cursor-pointer'>
+                    <p>Download</p>
+                    <DownloadIcon className='h-4 w-4' />
+                </div>
             </div>
+
             <Tabs defaultValue="background" className='space-y-5'>
                 <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="background">Background</TabsTrigger>
