@@ -3,11 +3,34 @@
 import { toJpeg } from 'html-to-image';
 import jsPDF from 'jspdf';
 import PdfGeneratorSettings from './components/PdfGeneratorSettings';
+import { useState } from 'react';
+
+const initialSlides = [
+  {
+    title: { text: "Exploring Next.js", color: '#000000', fontFamily: 'Arial' },
+    subtitle: { text: "An Overview", color: '#000000', fontFamily: 'Arial' },
+    content: [{ text: "An introduction to Next.js", color: '#000000', fontFamily: 'Arial' }]
+  },
+  {
+    title: { text: "Exploring Next.js New Features", color: '#000000', fontFamily: 'Arial' },
+    subtitle: { text: "Discover the latest enhancements in Next.js", color: '#000000', fontFamily: 'Arial' },
+    content: [
+      { text: "Improved Performance", color: '#000000', fontFamily: 'Arial' },
+      { text: "New Data Fetching Methods", color: '#000000', fontFamily: 'Arial' },
+      { text: "Enhanced Development Experience", color: '#000000', fontFamily: 'Arial' },
+      { text: "Optimized Static Site Generation", color: '#000000', fontFamily: 'Arial' },
+      { text: "Better Image Optimization", color: '#000000', fontFamily: 'Arial' },
+      { text: "Advanced Routing Capabilities", color: '#000000', fontFamily: 'Arial' }
+    ]
+  },
+  // ... (other slides remain the same)
+];
 
 export default function Home() {
+  const [slides, setSlides] = useState(initialSlides);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   const downloadImage = async () => {
-    debugger
     const elements = document.getElementsByClassName('slide-div');
     const pdf = new jsPDF({ unit: 'px', format: [540, 540] });
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -15,8 +38,6 @@ export default function Home() {
 
     for (let index = 0; index < elements.length; index++) {
       const element = elements[index] as HTMLElement;
-
-      // Remove border radius for clean export
       element.style.borderRadius = '0px';
 
       try {
@@ -29,8 +50,6 @@ export default function Home() {
             if (index > 0) {
               pdf.addPage([pageWidth, pageHeight], 'p');
             }
-
-            // Adjust image dimensions to fit within the page
             pdf.addImage(dataUrl, 'JPEG', 0, 0, pageWidth, pageHeight);
             resolve(null);
           };
@@ -43,95 +62,33 @@ export default function Home() {
     pdf.save('document.pdf');
   }
 
-  const slides = [
-    {
-      title: "Exploring Next.js",
-      subtitle: "An Overview",
-      points: []
-    },
-    {
-      title: "Exploring Next.js New Features",
-      subtitle: "Discover the latest enhancements in Next.js",
-      points: [
-        "Improved Performance",
-        "New Data Fetching Methods",
-        "Enhanced Development Experience",
-        "Optimized Static Site Generation",
-        "Better Image Optimization",
-        "Advanced Routing Capabilities"
-      ]
-    },
-    {
-      title: "Next.js Performance Boost",
-      subtitle: "How Next.js improves application performance",
-      points: [
-        "Automatic Code Splitting",
-        "Server-Side Rendering",
-        "Static Site Generation",
-        "Incremental Static Regeneration",
-        "Efficient Image Loading",
-        "Optimized Build Size"
-      ]
-    },
-    {
-      title: "Next.js Data Fetching",
-      subtitle: "Modern ways to fetch data in Next.js",
-      points: [
-        "getStaticProps",
-        "getServerSideProps",
-        "getStaticPaths",
-        "API Routes",
-        "Dynamic Imports",
-        "SWC for Fast Refresh"
-      ]
-    },
-    {
-      title: "Next.js Development Experience",
-      subtitle: "Tools and features for developers",
-      points: [
-        "Fast Refresh",
-        "TypeScript Support",
-        "Customizable Babel Config",
-        "Integrated ESLint",
-        "File-System Routing",
-        "Hot Module Replacement"
-      ]
-    },
-    {
-      title: "Next.js Deployment",
-      subtitle: "Deploying Next.js applications",
-      points: [
-        "Vercel Integration",
-        "Serverless Functions",
-        "Static Export",
-        "Multi-Zone Support",
-        "Environment Variables",
-        "Custom Server Support"
-      ]
-    },
-    {
-      title: "Conclusion",
-      subtitle: "Key Takeaways",
-      points: [
-        "Next.js provides advanced features and performance enhancements.",
-        "It offers multiple data fetching methods tailored for different needs.",
-        "Development experience is significantly improved with built-in tools.",
-        "Deployment is seamless with integrations like Vercel.",
-        "Next.js is a powerful framework for building modern web applications."
-      ]
-    }
-  ];
+  const updateSlideSettings = (index, section, field, value) => {
+    setSlides(prevSlides => {
+      const newSlides = [...prevSlides];
+      if (section === 'content') {
+        newSlides[index] = {
+          ...newSlides[index],
+          [section]: value // Directly set the new content array
+        };
+      } else {
+        newSlides[index] = {
+          ...newSlides[index],
+          [section]: {
+            ...newSlides[index][section],
+            [field]: value
+          }
+        };
+      }
+      return newSlides;
+    });
+  };
 
   return (
     <main className="flex flex-col min-h-screen px-4 py-2 md:px-6 md:py-2 lg:px-12 lg:py-6 bg-slate-200 justify-center">
-      {/* <div className="flex justify-end">
-        <button className="bg-blue-200 p-2 space-x-3 space-y-1 rounded cursor-pointer"
-          onClick={downloadImage}>Download</button>
-      </div> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-2 lg:p-10" id="grid">
         <div className="slide-parent flex flex-col space-y-10 overflow-y-auto bg-white rounded-md p-2 lg:p-4 h-[calc(82vh-2rem)]">
           {slides.map((slide, index) => (
-            <div key={index}>
+            <div key={index} onClick={() => setCurrentSlideIndex(index)}>
               <div className='slide-div'>
                 <div
                   style={{
@@ -142,11 +99,35 @@ export default function Home() {
                   className="h-[80vh] lg:h-[70vh] flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
                 >
                   <div className='flex flex-col justify-center p-10 h-full'>
-                    <h2 className="text-xl lg:text-2xl text-[#333333] font-serif font-extrabold">{slide.title}</h2>
-                    <h5 className="text-lg lg:text-lg text-[#333333] mt-1 font-serif font-semibold">{slide.subtitle}</h5>
-                    <ul className="space-y-3 mt-4 lg:mt-6 text-[#333333] font-serif">
-                      {slide.points.map((point, idx) => (
-                        <li key={idx}>➢ {point}</li>
+                    <h2
+                      className="text-xl lg:text-2xl font-extrabold"
+                      style={{
+                        color: slide.title.color,
+                        fontFamily: slide.title.fontFamily,
+                      }}
+                    >
+                      {slide.title.text}
+                    </h2>
+                    <h5
+                      className="text-lg lg:text-lg mt-1 font-semibold"
+                      style={{
+                        color: slide.subtitle.color,
+                        fontFamily: slide.subtitle.fontFamily,
+                      }}
+                    >
+                      {slide.subtitle.text}
+                    </h5>
+                    <ul className="space-y-3 mt-4 lg:mt-6">
+                      {slide.content.map((item, idx) => (
+                        <li
+                          key={idx}
+                          style={{
+                            color: item.color,
+                            fontFamily: item.fontFamily,
+                          }}
+                        >
+                          ➢ {item.text}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -157,7 +138,12 @@ export default function Home() {
         </div>
 
         <div className="h-[calc(82vh-2rem)]">
-          <PdfGeneratorSettings />
+          <PdfGeneratorSettings
+            onClickDownload={downloadImage}
+            updateSlideSettings={updateSlideSettings}
+            currentSlide={slides[currentSlideIndex]}
+            currentSlideIndex={currentSlideIndex}
+          />
         </div>
       </div>
     </main>

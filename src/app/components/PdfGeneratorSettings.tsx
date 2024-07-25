@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Label } from "@/app/components/ui/label";
@@ -7,7 +7,7 @@ import { Input } from "@/app/components/ui/input";
 import { Switch } from "@/app/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Button } from "@/app/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Plus, Trash2 } from "lucide-react";
 
 const colorOptions = [
     '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
@@ -30,10 +30,6 @@ const imageOptions = [
     '/path/to/image3.jpg',
     '/path/to/image4.jpg',
     '/path/to/image5.jpg',
-    '/path/to/image6.jpg',
-    '/path/to/image6.jpg',
-    '/path/to/image6.jpg',
-    '/path/to/image6.jpg',
     '/path/to/image6.jpg'
 ];
 
@@ -44,10 +40,41 @@ const socialMediaPlatforms = [
     { id: 'instagram', name: 'Instagram' },
 ];
 
-const PdfGeneratorSettings = () => {
+const PdfGeneratorSettings = ({ onClickDownload, updateSlideSettings, currentSlide, currentSlideIndex }) => {
     const [backgroundType, setBackgroundType] = useState('solid');
     const [showAuthorProfile, setShowAuthorProfile] = useState(true);
     const [selectedSocialMedia, setSelectedSocialMedia] = useState('');
+    const [contentEntries, setContentEntries] = useState([]);
+
+    useEffect(() => {
+        // Update local state when currentSlide changes
+        setContentEntries(currentSlide.content || []);
+    }, [currentSlide]);
+
+    const handleSettingChange = (section, field, value) => {
+        updateSlideSettings(currentSlideIndex, section, field, value);
+    };
+
+    const handleContentChange = (index, field, value) => {
+        const newEntries = contentEntries.map((entry, i) => 
+            i === index ? { ...entry, [field]: value } : entry
+        );
+        setContentEntries(newEntries);
+        handleSettingChange('content', null, newEntries);
+    };
+
+    const addContentEntry = () => {
+        const newEntry = { text: '', color: '#000000', fontFamily: 'Arial' };
+        const newEntries = [...contentEntries, newEntry];
+        setContentEntries(newEntries);
+        handleSettingChange('content', null, newEntries);
+    };
+
+    const removeContentEntry = (index) => {
+        const newEntries = contentEntries.filter((_, i) => i !== index);
+        setContentEntries(newEntries);
+        handleSettingChange('content', null, newEntries);
+    };
 
     return (
         <div className="flex flex-col h-full w-full p-5 bg-white rounded overflow-y-auto">
@@ -56,7 +83,7 @@ const PdfGeneratorSettings = () => {
                     <h3 className='text-xl font-semibold'>PDF Generator Settings </h3>
                     <h5 className='text-sm text-gray-600'>Customize your carousel PDF output</h5>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={onClickDownload}>
                     <Download className="mr-2 h-4 w-4" />
                     Download
                 </Button>
@@ -145,34 +172,98 @@ const PdfGeneratorSettings = () => {
 
                 <TabsContent value="text">
                     <div className="space-y-4">
-                        {['Title', 'Subtitle', 'Content'].map((textType) => (
+                        {['title', 'subtitle'].map((textType) => (
                             <div key={textType} className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                    <Label htmlFor={`show${textType}`}>{textType}</Label>
+                                    <Label htmlFor={`show${textType}`}>{textType.charAt(0).toUpperCase() + textType.slice(1)}</Label>
                                     <Switch defaultChecked={true} id={`show${textType}`} />
                                 </div>
-                                <Input placeholder={`Enter ${textType.toLowerCase()}`} />
+                                <Input
+                                    placeholder={`Enter ${textType}`}
+                                    value={currentSlide[textType].text}
+                                    onChange={(e) => handleSettingChange(textType, 'text', e.target.value)}
+                                />
                                 <div className="flex space-x-2">
                                     <div className="flex-1">
                                         <Label>Font Color</Label>
-                                        <Input type="color" className="h-8 w-full" />
+                                        <Input
+                                            type="color"
+                                            className="h-8 w-full"
+                                            value={currentSlide[textType].color}
+                                            onChange={(e) => handleSettingChange(textType, 'color', e.target.value)}
+                                        />
                                     </div>
                                     <div className="flex-1">
                                         <Label>Font Type</Label>
-                                        <Select>
+                                        <Select
+                                            value={currentSlide[textType].fontFamily}
+                                            onValueChange={(value) => handleSettingChange(textType, 'fontFamily', value)}
+                                        >
                                             <SelectTrigger className="h-8">
                                                 <SelectValue placeholder="Select font" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="arial">Arial</SelectItem>
-                                                <SelectItem value="times">Times New Roman</SelectItem>
-                                                <SelectItem value="verdana">Verdana</SelectItem>
+                                                <SelectItem value="Arial">Arial</SelectItem>
+                                                <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+                                                <SelectItem value="Verdana">Verdana</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
                                 </div>
                             </div>
                         ))}
+                    </div>
+
+                    <div className="space-y-2 mt-2">
+                        <Label>Content</Label>
+                        <div className="max-h-[40vh] overflow-y-auto space-y-4 pr-2">
+                            {contentEntries.map((entry, index) => (
+                                <Card key={index} className="p-4">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <Label>Content {index + 1}</Label>
+                                        <Button variant="ghost" size="sm" onClick={() => removeContentEntry(index)}>
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                    <Input
+                                        placeholder="Enter content"
+                                        value={entry.text}
+                                        onChange={(e) => handleContentChange(index, 'text', e.target.value)}
+                                        className="mb-2"
+                                    />
+                                    <div className="flex space-x-2">
+                                        <div className="flex-1">
+                                            <Label>Font Color</Label>
+                                            <Input
+                                                type="color"
+                                                className="h-8 w-full"
+                                                value={entry.color}
+                                                onChange={(e) => handleContentChange(index, 'color', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <Label>Font Type</Label>
+                                            <Select
+                                                value={entry.fontFamily}
+                                                onValueChange={(value) => handleContentChange(index, 'fontFamily', value)}
+                                            >
+                                                <SelectTrigger className="h-8">
+                                                    <SelectValue placeholder="Select font" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Arial">Arial</SelectItem>
+                                                    <SelectItem value="Times New Roman">Times New Roman</SelectItem>
+                                                    <SelectItem value="Verdana">Verdana</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                </Card>
+                            ))}
+                        </div>
+                        <Button variant="outline" size="sm" onClick={addContentEntry} className="w-full mt-2">
+                            <Plus className="h-4 w-4 mr-1" /> Add Content
+                        </Button>
                     </div>
                 </TabsContent>
 
