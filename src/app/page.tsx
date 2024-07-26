@@ -5,7 +5,19 @@ import jsPDF from 'jspdf';
 import PdfGeneratorSettings from './components/PdfGeneratorSettings';
 import { useState } from 'react';
 
-const initialSlides = [
+export interface TextContent {
+  text: string;
+  color: string;
+  fontFamily: string;
+}
+
+export interface Slide {
+  title: TextContent;
+  subtitle: TextContent;
+  content: TextContent[];
+}
+
+const initialSlides: Slide[] = [
   {
     title: { text: "Exploring Next.js", color: '#000000', fontFamily: 'Arial' },
     subtitle: { text: "An Overview", color: '#000000', fontFamily: 'Arial' },
@@ -27,7 +39,7 @@ const initialSlides = [
 ];
 
 export default function Home() {
-  const [slides, setSlides] = useState(initialSlides);
+  const [slides, setSlides] = useState<Slide[]>(initialSlides);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
   const downloadImage = async () => {
@@ -45,13 +57,13 @@ export default function Home() {
         const img = new Image();
         img.src = dataUrl;
 
-        await new Promise((resolve) => {
+        await new Promise<void>((resolve) => {
           img.onload = () => {
             if (index > 0) {
               pdf.addPage([pageWidth, pageHeight], 'p');
             }
             pdf.addImage(dataUrl, 'JPEG', 0, 0, pageWidth, pageHeight);
-            resolve(null);
+            resolve();
           };
         });
       } catch (error) {
@@ -62,13 +74,13 @@ export default function Home() {
     pdf.save('document.pdf');
   }
 
-  const updateSlideSettings = (index, section, field, value) => {
-    setSlides(prevSlides => {
+  const updateSlideSettings = (index: number, section: keyof Slide, field: string, value: string | TextContent[]) => {
+    setSlides((prevSlides: Slide[]) => {
       const newSlides = [...prevSlides];
       if (section === 'content') {
         newSlides[index] = {
           ...newSlides[index],
-          [section]: value // Directly set the new content array
+          [section]: value as TextContent[]
         };
       } else {
         newSlides[index] = {
@@ -76,7 +88,7 @@ export default function Home() {
           [section]: {
             ...newSlides[index][section],
             [field]: value
-          }
+          } as TextContent
         };
       }
       return newSlides;

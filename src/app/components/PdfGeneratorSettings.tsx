@@ -8,6 +8,7 @@ import { Switch } from "@/app/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Button } from "@/app/components/ui/button";
 import { Download, Plus, Trash2 } from "lucide-react";
+import { Slide, TextContent } from '../page';
 
 const colorOptions = [
     '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
@@ -40,40 +41,47 @@ const socialMediaPlatforms = [
     { id: 'instagram', name: 'Instagram' },
 ];
 
-const PdfGeneratorSettings = ({ onClickDownload, updateSlideSettings, currentSlide, currentSlideIndex }) => {
-    const [backgroundType, setBackgroundType] = useState('solid');
+
+interface PdfGeneratorSettingsProps {
+    onClickDownload: () => void;
+    updateSlideSettings: (slideIndex: number, section: keyof Slide, field: string, value: string | TextContent[]) => void;
+    currentSlide: Slide;
+    currentSlideIndex: number;
+}
+
+const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide, currentSlideIndex }) => {
+    const [backgroundType, setBackgroundType] = useState<'solid' | 'gradient' | 'image'>('solid');
     const [showAuthorProfile, setShowAuthorProfile] = useState(true);
     const [selectedSocialMedia, setSelectedSocialMedia] = useState('');
-    const [contentEntries, setContentEntries] = useState([]);
+    const [contentEntries, setContentEntries] = useState<TextContent[]>([]);
 
     useEffect(() => {
-        // Update local state when currentSlide changes
         setContentEntries(currentSlide.content || []);
     }, [currentSlide]);
 
-    const handleSettingChange = (section, field, value) => {
+    const handleSettingChange = (section: keyof Slide, field: string, value: string | TextContent[]) => {
         updateSlideSettings(currentSlideIndex, section, field, value);
     };
 
-    const handleContentChange = (index, field, value) => {
+    const handleContentChange = (index: number, field: keyof TextContent, value: string) => {
         const newEntries = contentEntries.map((entry, i) => 
             i === index ? { ...entry, [field]: value } : entry
         );
         setContentEntries(newEntries);
-        handleSettingChange('content', null, newEntries);
+        handleSettingChange('content', 'text', newEntries);
     };
 
     const addContentEntry = () => {
-        const newEntry = { text: '', color: '#000000', fontFamily: 'Arial' };
+        const newEntry: TextContent = { text: '', color: '#000000', fontFamily: 'Arial' };
         const newEntries = [...contentEntries, newEntry];
         setContentEntries(newEntries);
-        handleSettingChange('content', null, newEntries);
+        handleSettingChange('content', 'text', newEntries);
     };
 
-    const removeContentEntry = (index) => {
+    const removeContentEntry = (index: number) => {
         const newEntries = contentEntries.filter((_, i) => i !== index);
         setContentEntries(newEntries);
-        handleSettingChange('content', null, newEntries);
+        handleSettingChange('content', 'text', newEntries);
     };
 
     return (
@@ -103,7 +111,7 @@ const PdfGeneratorSettings = ({ onClickDownload, updateSlideSettings, currentSli
                             <RadioGroup
                                 defaultValue="solid"
                                 className="mt-2 flex space-x-4"
-                                onValueChange={setBackgroundType}
+                                onValueChange={(value: 'solid' | 'gradient' | 'image') => setBackgroundType(value)}
                             >
                                 <div className="flex items-center space-x-2">
                                     <RadioGroupItem value="solid" id="solid" />
@@ -172,7 +180,7 @@ const PdfGeneratorSettings = ({ onClickDownload, updateSlideSettings, currentSli
 
                 <TabsContent value="text">
                     <div className="space-y-4">
-                        {['title', 'subtitle'].map((textType) => (
+                        {(['title', 'subtitle'] as const).map((textType) => (
                             <div key={textType} className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <Label htmlFor={`show${textType}`}>{textType.charAt(0).toUpperCase() + textType.slice(1)}</Label>
