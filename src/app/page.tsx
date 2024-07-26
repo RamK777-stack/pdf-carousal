@@ -4,6 +4,8 @@ import { toJpeg } from 'html-to-image';
 import jsPDF from 'jspdf';
 import PdfGeneratorSettings from './components/PdfGeneratorSettings';
 import { useState } from 'react';
+import { Button } from './components/ui/button';
+import { PlusCircle, Trash2 } from 'lucide-react';
 
 export interface TextContent {
   text: string;
@@ -37,6 +39,12 @@ const initialSlides: Slide[] = [
   },
   // ... (other slides remain the same)
 ];
+
+const dummySlide: Slide = {
+  title: { text: "Enter title", color: '#000000', fontFamily: 'Arial' },
+  subtitle: { text: "Subtitle", color: '#000000', fontFamily: 'Arial' },
+  content: [{ text: "Your content", color: '#000000', fontFamily: 'Arial' }]
+};
 
 export default function Home() {
   const [slides, setSlides] = useState<Slide[]>(initialSlides);
@@ -95,55 +103,91 @@ export default function Home() {
     });
   };
 
+  const addSlide = () => {
+    setSlides(prevSlides => [...prevSlides, dummySlide]);
+    setCurrentSlideIndex(slides.length);
+  };
+
+  const deleteSlide = (index: number) => {
+    setSlides(prevSlides => prevSlides.filter((_, i) => i !== index));
+    if (currentSlideIndex >= index && currentSlideIndex > 0) {
+      setCurrentSlideIndex(currentSlideIndex - 1);
+    }
+  };
+
   return (
     <main className="flex flex-col min-h-screen px-4 py-2 md:px-6 md:py-2 lg:px-12 lg:py-6 bg-slate-200 justify-center">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-2 lg:p-10" id="grid">
         <div className="slide-parent flex flex-col space-y-10 overflow-y-auto bg-white rounded-md p-2 lg:p-4 h-[calc(82vh-2rem)]">
           {slides.map((slide, index) => (
-            <div key={index} onClick={() => setCurrentSlideIndex(index)}>
-              <div className='slide-div'>
-                <div
-                  style={{
-                    backgroundImage: `url('/assets/new-book.png')`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                  className="h-[80vh] lg:h-[70vh] flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
-                >
-                  <div className='flex flex-col justify-center p-10 h-full'>
-                    <h2
-                      className="text-xl lg:text-2xl font-extrabold"
+            <div key={index} className="space-y-4">
+              <div className="relative">
+                <div onClick={() => setCurrentSlideIndex(index)}>
+                  <div className='slide-div'>
+                    <div
                       style={{
-                        color: slide.title.color,
-                        fontFamily: slide.title.fontFamily,
+                        backgroundImage: `url('/assets/new-book.png')`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
                       }}
+                      className="h-[80vh] lg:h-[70vh] flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
                     >
-                      {slide.title.text}
-                    </h2>
-                    <h5
-                      className="text-lg lg:text-lg mt-1 font-semibold"
-                      style={{
-                        color: slide.subtitle.color,
-                        fontFamily: slide.subtitle.fontFamily,
-                      }}
-                    >
-                      {slide.subtitle.text}
-                    </h5>
-                    <ul className="space-y-3 mt-4 lg:mt-6">
-                      {slide.content.map((item, idx) => (
-                        <li
-                          key={idx}
+                      <div className='flex flex-col justify-center p-10 h-full'>
+                        <h2
+                          className="text-xl lg:text-2xl font-extrabold"
                           style={{
-                            color: item.color,
-                            fontFamily: item.fontFamily,
+                            color: slide.title.color,
+                            fontFamily: slide.title.fontFamily,
                           }}
                         >
-                          ➢ {item.text}
-                        </li>
-                      ))}
-                    </ul>
+                          {slide.title.text}
+                        </h2>
+                        <h5
+                          className="text-lg lg:text-lg mt-1 font-semibold"
+                          style={{
+                            color: slide.subtitle.color,
+                            fontFamily: slide.subtitle.fontFamily,
+                          }}
+                        >
+                          {slide.subtitle.text}
+                        </h5>
+                        <ul className="space-y-3 mt-4 lg:mt-6">
+                          {slide.content.map((item, idx) => (
+                            <li
+                              key={idx}
+                              style={{
+                                color: item.color,
+                                fontFamily: item.fontFamily,
+                              }}
+                            >
+                              ➢ {item.text}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2"
+                  onClick={() => deleteSlide(index)}
+                  disabled={slides.length === 1}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex justify-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addSlide()}
+                  className="flex items-center space-x-2"
+                >
+                  <PlusCircle className="h-4 w-4" />
+                  <span>Add New Slide</span>
+                </Button>
               </div>
             </div>
           ))}
