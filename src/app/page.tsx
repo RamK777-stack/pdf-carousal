@@ -52,6 +52,7 @@ const dummySlide: Slide = {
 };
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState('background');
   const [slides, setSlides] = useState<Slide[]>(initialSlides);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [background, setBackground] = useState<Background>({ type: 'solid', value: '#ffffff' });
@@ -121,6 +122,12 @@ export default function Home() {
     }
   };
 
+  const onClickSlide = (index: number) => {
+    setCurrentSlideIndex(index)
+    setActiveTab('text')
+  }
+
+
   return (
     <main className="flex flex-col min-h-screen px-4 py-2 md:px-6 md:py-2 lg:px-12 lg:py-6 bg-slate-200 justify-center">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-2 lg:p-10" id="grid">
@@ -128,7 +135,7 @@ export default function Home() {
           {slides.map((slide, index) => (
             <div key={index} className="space-y-4">
               <div className="relative">
-                <div onClick={() => setCurrentSlideIndex(index)}>
+                <div onClick={() => onClickSlide(index)}>
                   <div className='slide-div'>
                     <div
                       style={{
@@ -205,6 +212,8 @@ export default function Home() {
 
         <div className="h-[calc(82vh-2rem)]">
           <PdfGeneratorSettings
+            activeTab={activeTab}
+            onChangeTab={setActiveTab}
             onClickDownload={downloadImage}
             updateSlideSettings={updateSlideSettings}
             currentSlide={slides[currentSlideIndex]}

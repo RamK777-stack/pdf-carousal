@@ -82,9 +82,11 @@ interface PdfGeneratorSettingsProps {
     currentSlide: Slide;
     currentSlideIndex: number;
     updateBackground: (newBackground: Background) => void;
+    activeTab: string
+    onChangeTab: (tab: string) => void;
 }
 
-const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide, currentSlideIndex, updateBackground }) => {
+const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide, currentSlideIndex, updateBackground, activeTab, onChangeTab }) => {
     const [backgroundType, setBackgroundType] = useState<'solid' | 'gradient' | 'image'>('solid');
     const [showAuthorProfile, setShowAuthorProfile] = useState(true);
     const [selectedSocialMedia, setSelectedSocialMedia] = useState('');
@@ -136,7 +138,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                 </Button>
             </div>
 
-            <Tabs defaultValue="background" className='space-y-5'>
+            <Tabs value={activeTab} defaultValue="background" className='space-y-5' onValueChange={onChangeTab}>
                 <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="background">Background</TabsTrigger>
                     <TabsTrigger value="text">Text</TabsTrigger>
