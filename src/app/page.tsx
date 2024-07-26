@@ -40,6 +40,11 @@ const initialSlides: Slide[] = [
   // ... (other slides remain the same)
 ];
 
+export interface Background {
+  type: 'solid' | 'gradient' | 'image';
+  value: string;
+}
+
 const dummySlide: Slide = {
   title: { text: "Enter title", color: '#000000', fontFamily: 'Arial' },
   subtitle: { text: "Subtitle", color: '#000000', fontFamily: 'Arial' },
@@ -49,6 +54,7 @@ const dummySlide: Slide = {
 export default function Home() {
   const [slides, setSlides] = useState<Slide[]>(initialSlides);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [background, setBackground] = useState<Background>({ type: 'solid', value: '#ffffff' });
 
   const downloadImage = async () => {
     const elements = document.getElementsByClassName('slide-div');
@@ -126,9 +132,13 @@ export default function Home() {
                   <div className='slide-div'>
                     <div
                       style={{
-                        backgroundImage: `url('/assets/new-book.png')`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
+                        ...(background.type === 'solid' && { backgroundColor: background.value }),
+                        ...(background.type === 'gradient' && { backgroundImage: background.value }),
+                        ...(background.type === 'image' && {
+                          backgroundImage: `url(${background.value})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                        }),
                       }}
                       className="h-[80vh] lg:h-[70vh] flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
                     >
@@ -199,6 +209,7 @@ export default function Home() {
             updateSlideSettings={updateSlideSettings}
             currentSlide={slides[currentSlideIndex]}
             currentSlideIndex={currentSlideIndex}
+            updateBackground={setBackground}
           />
         </div>
       </div>

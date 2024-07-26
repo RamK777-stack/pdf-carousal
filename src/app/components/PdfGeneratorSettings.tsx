@@ -8,23 +8,57 @@ import { Switch } from "@/app/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Button } from "@/app/components/ui/button";
 import { Download, Plus, Trash2 } from "lucide-react";
-import { Slide, TextContent } from '../page';
+import { Background, Slide, TextContent } from '../page';
+import CustomColorInput from './CustomColorInput';
 
 const colorOptions = [
-    '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',
-    '#800000', '#008000', '#000080', '#808000', '#800080', '#008080',
-    '#C0C0C0', '#808080', '#000000', '#FFFFFF'
+    '#E8F3F3', // Light Blue-Gray
+    '#F0EAD6', // Eggshell
+    '#E6E6FA', // Lavender
+    '#F0F8FF', // Alice Blue
+    '#F5F5DC', // Beige
+    '#E0FFFF', // Light Cyan
+    '#FDF5E6', // Old Lace
+    '#F0FFF0', // Honeydew
+    '#F8F8FF', // Ghost White
+    '#FFFAF0', // Floral White
+    '#F5FFFA', // Mint Cream
+    '#F0FFFF', // Azure
+    '#FFF5EE', // Seashell
+    '#F5F5F5', // White Smoke
+    '#FAFAFA', // Snow
+    '#FCFCFC'  // Almost White
 ];
 
 const gradientOptions = [
-    'linear-gradient(to right, #ff9966, #ff5e62)',
-    'linear-gradient(to right, #00c6ff, #0072ff)',
-    'linear-gradient(to right, #4facfe, #00f2fe)',
-    'linear-gradient(to right, #43e97b, #38f9d7)',
-    'linear-gradient(to right, #fa709a, #fee140)',
-    'linear-gradient(to right, #7f7fd5, #86a8e7, #91eae4)'
-];
+    // Subtle options
+    'linear-gradient(to right, #ffffff, #f2f7fd)', // Crisp White to Soft Blue
+    'linear-gradient(to right, #f8f9fa, #e9ecef)', // Clean Gray
+    'linear-gradient(to right, #f0f8ff, #e6f3ff)', // Alice Blue Shades
+    'linear-gradient(to right, #f5f7fa, #e4e8ed)', // Subtle Blue-Gray
 
+    // Vibrant options
+    'linear-gradient(to right, #ffecd2, #fcb69f)', // Juicy Peach
+    'linear-gradient(to right, #d4fc79, #96e6a1)', // Fresh Grass
+    'linear-gradient(to right, #84fab0, #8fd3f4)', // Aqua Splash
+    'linear-gradient(to right, #a1c4fd, #c2e9fb)', // Soft Blue
+    'linear-gradient(to right, #fad0c4, #ffd1ff)', // Pastel Pink
+    'linear-gradient(to right, #ffecd2, #fcb69f)', // Warm Flame
+
+    // Mix of subtle and vibrant
+    'linear-gradient(to right, #fdfcfb, #e2d1c3)', // Warm White
+    'linear-gradient(to right, #f5f7fa, #c3cfe2)', // Mellow Blue
+    'linear-gradient(to right, #fdcbf1, #e6dee9)', // Gentle Care
+    'linear-gradient(to right, #a8edea, #fed6e3)', // Young Passion
+    'linear-gradient(to right, #e0c3fc, #8ec5fc)', // Lavender Water
+    'linear-gradient(to right, #f3e7e9, #e3eeff)', // Winter Neva
+
+    // Professional vibrant
+    'linear-gradient(to right, #4facfe, #00f2fe)', // Blue Lagoon
+    'linear-gradient(to right, #43e97b, #38f9d7)', // Emerald Water
+    'linear-gradient(to right, #fa709a, #fee140)', // Sweet Period
+    'linear-gradient(to right, #6a11cb, #2575fc)', // Deep Blue
+];
 const imageOptions = [
     '/path/to/image1.jpg',
     '/path/to/image2.jpg',
@@ -47,9 +81,10 @@ interface PdfGeneratorSettingsProps {
     updateSlideSettings: (slideIndex: number, section: keyof Slide, field: string, value: string | TextContent[]) => void;
     currentSlide: Slide;
     currentSlideIndex: number;
+    updateBackground: (newBackground: Background) => void;
 }
 
-const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide, currentSlideIndex }) => {
+const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide, currentSlideIndex, updateBackground }) => {
     const [backgroundType, setBackgroundType] = useState<'solid' | 'gradient' | 'image'>('solid');
     const [showAuthorProfile, setShowAuthorProfile] = useState(true);
     const [selectedSocialMedia, setSelectedSocialMedia] = useState('');
@@ -64,7 +99,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
     };
 
     const handleContentChange = (index: number, field: keyof TextContent, value: string) => {
-        const newEntries = contentEntries.map((entry, i) => 
+        const newEntries = contentEntries.map((entry, i) =>
             i === index ? { ...entry, [field]: value } : entry
         );
         setContentEntries(newEntries);
@@ -82,6 +117,10 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
         const newEntries = contentEntries.filter((_, i) => i !== index);
         setContentEntries(newEntries);
         handleSettingChange('content', 'text', newEntries);
+    };
+
+    const handleBackgroundChange = (type: 'solid' | 'gradient' | 'image', value: string) => {
+        updateBackground({ type, value });
     };
 
     return (
@@ -137,7 +176,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                             key={index}
                                             className="w-12 h-12 rounded-sm cursor-pointer border border-gray-200"
                                             style={{ backgroundColor: color }}
-                                            onClick={() => {/* Handle color selection */ }}
+                                            onClick={() => handleBackgroundChange('solid', color)}
                                         />
                                     ))}
                                 </div>
@@ -153,7 +192,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                             key={index}
                                             className="w-12 h-12 rounded-sm cursor-pointer border border-gray-200"
                                             style={{ background: gradient }}
-                                            onClick={() => {/* Handle gradient selection */ }}
+                                            onClick={() => handleBackgroundChange('gradient', gradient)}
                                         />
                                     ))}
                                 </div>
@@ -169,7 +208,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                             key={index}
                                             className="w-16 h-16 bg-cover bg-center rounded-sm cursor-pointer border border-gray-200"
                                             style={{ backgroundImage: `url(${image})` }}
-                                            onClick={() => {/* Handle image selection */ }}
+                                            onClick={() => handleBackgroundChange('image', image)}
                                         />
                                     ))}
                                 </div>
@@ -194,11 +233,9 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                 <div className="flex space-x-2">
                                     <div className="flex-1">
                                         <Label>Font Color</Label>
-                                        <Input
-                                            type="color"
-                                            className="h-8 w-full"
+                                        <CustomColorInput
                                             value={currentSlide[textType].color}
-                                            onChange={(e) => handleSettingChange(textType, 'color', e.target.value)}
+                                            onChange={(color) => handleSettingChange(textType, 'color', color)}
                                         />
                                     </div>
                                     <div className="flex-1">
@@ -242,11 +279,9 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                     <div className="flex space-x-2">
                                         <div className="flex-1">
                                             <Label>Font Color</Label>
-                                            <Input
-                                                type="color"
-                                                className="h-8 w-full"
+                                            <CustomColorInput
                                                 value={entry.color}
-                                                onChange={(e) => handleContentChange(index, 'color', e.target.value)}
+                                                onChange={(color) => handleContentChange(index, 'color', color)}
                                             />
                                         </div>
                                         <div className="flex-1">
