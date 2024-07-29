@@ -55,8 +55,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('background');
   const [slides, setSlides] = useState<Slide[]>(initialSlides);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [background, setBackground] = useState<Background>({ type: 'solid', value: '#ffffff' });
-  const [activeBackground, setActiveBackground] = useState<string>('');
+  const [background, setBackground] = useState<Background>({ type: 'gradient', value: 'linear-gradient(to right, #e0c3fc, #8ec5fc)' });
+  const [activeBackground, setActiveBackground] = useState<string>('linear-gradient(to right, #e0c3fc, #8ec5fc)');
 
   const downloadImage = async () => {
     const elements = document.getElementsByClassName('slide-div');

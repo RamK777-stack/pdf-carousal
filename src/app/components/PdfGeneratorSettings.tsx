@@ -100,7 +100,7 @@ interface PdfGeneratorSettingsProps {
 
 const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide,
     currentSlideIndex, updateBackground, activeTab, onChangeTab, activeBackground }) => {
-    const [backgroundType, setBackgroundType] = useState<'solid' | 'gradient' | 'image'>('solid');
+    const [backgroundType, setBackgroundType] = useState<'solid' | 'gradient' | 'image'>('gradient');
     const [showAuthorProfile, setShowAuthorProfile] = useState(true);
     const [selectedSocialMedia, setSelectedSocialMedia] = useState('');
     const [contentEntries, setContentEntries] = useState<TextContent[]>([]);
@@ -163,7 +163,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                         <div>
                             <Label>Background Type</Label>
                             <RadioGroup
-                                defaultValue="solid"
+                                defaultValue="gradient"
                                 className="mt-2 flex space-x-4"
                                 onValueChange={(value: 'solid' | 'gradient' | 'image') => setBackgroundType(value)}
                             >
