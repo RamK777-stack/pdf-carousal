@@ -189,7 +189,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                     {colorOptions.map((color, index) => (
                                         <div
                                             key={index}
-                                            className={`w-12 h-12 rounded-sm cursor-pointer ${activeBackground === color ? `border-2 border-gray-300` : 'border border-gray-200'
+                                            className={`w-12 h-12 rounded-sm cursor-pointer ${activeBackground === color ? `border-2 border-gray-300 ring-2 ring-blue-300` : 'border border-gray-200'
                                                 }`}
                                             style={{ backgroundColor: color }}
                                             onClick={() => handleBackgroundChange('solid', color)}
@@ -206,7 +206,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                     {gradientOptions.map((gradient, index) => (
                                         <div
                                             key={index}
-                                            className={`w-12 h-12 rounded-sm cursor-pointer ${activeBackground === gradient ? `border-2 border-gray-300` : 'border border-gray-200'
+                                            className={`w-12 h-12 rounded-sm cursor-pointer ${activeBackground === gradient ? `border-2 border-gray-300 ring-2 ring-blue-300` : 'border border-gray-200'
                                                 }`}
                                             style={{ background: gradient }}
                                             onClick={() => handleBackgroundChange('gradient', gradient)}
