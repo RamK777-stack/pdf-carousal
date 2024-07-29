@@ -12,23 +12,35 @@ import { Background, Slide, TextContent } from '../page';
 import CustomColorInput from './CustomColorInput';
 
 const colorOptions = [
-    '#E8F3F3', // Light Blue-Gray
-    '#F0EAD6', // Eggshell
-    '#E6E6FA', // Lavender
-    '#F0F8FF', // Alice Blue
-    '#F5F5DC', // Beige
-    '#E0FFFF', // Light Cyan
-    '#FDF5E6', // Old Lace
+    '#CC0000', // Less Vibrant Red
+    '#CC6699', // Less Vibrant Hot Pink
+    '#009ACD', // Less Vibrant Deep Sky Blue
+    '#2E8B57', // Less Vibrant Lime Green
+    '#7B68EE', // Less Vibrant Lavender
+    '#20B2AA', // Less Vibrant Dark Turquoise
+    '#FF7F50', // Less Vibrant Dark Orange
+    '#DAA520', // Less Vibrant Gold
+    '#7A42CC', // Less Vibrant Blue Violet
+    '#FF6347', // Less Vibrant Orange Red
+    '#4682B4', // Less Vibrant Blue-Gray
+    '#BC8F8F',  // Less Vibrant Tan
+    '#FCFCFC', // Almost White
+    '#FAFAFA', // Snow
+    '#F0FFFF', // Azure
     '#F0FFF0', // Honeydew
+    '#E6E6FA', // Lavender
+    '#E0FFFF', // Light Cyan
+    '#FFF5EE', // Seashell
+    '#F0EAD6', // Eggshell
     '#F8F8FF', // Ghost White
     '#FFFAF0', // Floral White
-    '#F5FFFA', // Mint Cream
-    '#F0FFFF', // Azure
-    '#FFF5EE', // Seashell
+    '#E8F3F3', // Light Blue-Gray
+    '#F5F5DC', // Beige
     '#F5F5F5', // White Smoke
-    '#FAFAFA', // Snow
-    '#FCFCFC'  // Almost White
+    '#FDF5E6'  // Old Lace
 ];
+
+
 
 const gradientOptions = [
     // Subtle options
@@ -43,7 +55,6 @@ const gradientOptions = [
     'linear-gradient(to right, #84fab0, #8fd3f4)', // Aqua Splash
     'linear-gradient(to right, #a1c4fd, #c2e9fb)', // Soft Blue
     'linear-gradient(to right, #fad0c4, #ffd1ff)', // Pastel Pink
-    'linear-gradient(to right, #ffecd2, #fcb69f)', // Warm Flame
 
     // Mix of subtle and vibrant
     'linear-gradient(to right, #fdfcfb, #e2d1c3)', // Warm White
@@ -82,11 +93,13 @@ interface PdfGeneratorSettingsProps {
     currentSlide: Slide;
     currentSlideIndex: number;
     updateBackground: (newBackground: Background) => void;
-    activeTab: string
+    activeTab: string;
     onChangeTab: (tab: string) => void;
+    activeBackground: string;
 }
 
-const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide, currentSlideIndex, updateBackground, activeTab, onChangeTab }) => {
+const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide,
+    currentSlideIndex, updateBackground, activeTab, onChangeTab, activeBackground }) => {
     const [backgroundType, setBackgroundType] = useState<'solid' | 'gradient' | 'image'>('solid');
     const [showAuthorProfile, setShowAuthorProfile] = useState(true);
     const [selectedSocialMedia, setSelectedSocialMedia] = useState('');
@@ -176,7 +189,8 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                     {colorOptions.map((color, index) => (
                                         <div
                                             key={index}
-                                            className="w-12 h-12 rounded-sm cursor-pointer border border-gray-200"
+                                            className={`w-12 h-12 rounded-sm cursor-pointer ${activeBackground === color ? `border-2 border-gray-300` : 'border border-gray-200'
+                                                }`}
                                             style={{ backgroundColor: color }}
                                             onClick={() => handleBackgroundChange('solid', color)}
                                         />
@@ -192,7 +206,8 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                     {gradientOptions.map((gradient, index) => (
                                         <div
                                             key={index}
-                                            className="w-12 h-12 rounded-sm cursor-pointer border border-gray-200"
+                                            className={`w-12 h-12 rounded-sm cursor-pointer ${activeBackground === gradient ? `border-2 border-gray-300` : 'border border-gray-200'
+                                                }`}
                                             style={{ background: gradient }}
                                             onClick={() => handleBackgroundChange('gradient', gradient)}
                                         />

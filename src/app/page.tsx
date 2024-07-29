@@ -56,6 +56,7 @@ export default function Home() {
   const [slides, setSlides] = useState<Slide[]>(initialSlides);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [background, setBackground] = useState<Background>({ type: 'solid', value: '#ffffff' });
+  const [activeBackground, setActiveBackground] = useState<string>('');
 
   const downloadImage = async () => {
     const elements = document.getElementsByClassName('slide-div');
@@ -125,6 +126,11 @@ export default function Home() {
   const onClickSlide = (index: number) => {
     setCurrentSlideIndex(index)
     setActiveTab('text')
+  }
+
+  const updateBackground = (background: Background) => {
+    setBackground(background)
+    setActiveBackground(background.value)
   }
 
 
@@ -218,7 +224,8 @@ export default function Home() {
             updateSlideSettings={updateSlideSettings}
             currentSlide={slides[currentSlideIndex]}
             currentSlideIndex={currentSlideIndex}
-            updateBackground={setBackground}
+            updateBackground={updateBackground}
+            activeBackground={activeBackground}
           />
         </div>
       </div>
