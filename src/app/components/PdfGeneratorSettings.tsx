@@ -40,8 +40,6 @@ const colorOptions = [
     '#FDF5E6'  // Old Lace
 ];
 
-
-
 const gradientOptions = [
     // Subtle options
     'linear-gradient(to right, #ffffff, #f2f7fd)', // Crisp White to Soft Blue
@@ -70,10 +68,21 @@ const gradientOptions = [
     'linear-gradient(to right, #fa709a, #fee140)', // Sweet Period
     'linear-gradient(to right, #6a11cb, #2575fc)', // Deep Blue
 ];
+
 const imageOptions = [
-    '/path/to/image1.jpg',
-    '/path/to/image2.jpg',
-    '/path/to/image3.jpg',
+    '/assets/bg-1.png',
+    '/assets/bg-2.png',
+    '/assets/bg-4.png',
+    '/assets/bg-5.png',
+    '/assets/bg-6.png',
+    '/assets/bg-7.png',
+    '/assets/bg-8.png',
+    '/assets/bg-9.png',
+    '/assets/bg-10.png',
+    '/assets/bg-12.png',
+    '/assets/bg-13.png',
+    '/assets/new-book.png',
+    '/assets/book.svg',
     '/path/to/image4.jpg',
     '/path/to/image5.jpg',
     '/path/to/image6.jpg'
@@ -85,7 +94,6 @@ const socialMediaPlatforms = [
     { id: 'github', name: 'GitHub' },
     { id: 'instagram', name: 'Instagram' },
 ];
-
 
 interface PdfGeneratorSettingsProps {
     onClickDownload: () => void;
@@ -122,7 +130,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
     };
 
     const addContentEntry = () => {
-        const newEntry: TextContent = { text: '', color: '#000000', fontFamily: 'Arial' };
+        const newEntry: TextContent = { text: '', color: contentEntries[contentEntries.length - 1].color, fontFamily: contentEntries[contentEntries.length - 1].fontFamily };
         const newEntries = [...contentEntries, newEntry];
         setContentEntries(newEntries);
         handleSettingChange('content', 'text', newEntries);

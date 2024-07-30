@@ -112,8 +112,18 @@ export default function Home() {
   };
 
   const addSlide = () => {
-    setSlides(prevSlides => [...prevSlides, dummySlide]);
-    setCurrentSlideIndex(slides.length);
+    setSlides(prevSlides => {
+      if (currentSlideIndex > -1) {
+        return [
+          ...prevSlides.slice(0, currentSlideIndex + 1),
+          dummySlide,
+          ...prevSlides.slice(currentSlideIndex + 1)
+        ];
+      } else {
+        return [...prevSlides, dummySlide];
+      }
+    });
+    setCurrentSlideIndex(currentSlideIndex + 1);
   };
 
   const deleteSlide = (index: number) => {
@@ -133,61 +143,62 @@ export default function Home() {
     setActiveBackground(background.value)
   }
 
+  console.log(slides)
+
 
   return (
     <main className="flex flex-col min-h-screen px-4 py-2 md:px-6 md:py-2 lg:px-12 lg:py-6 bg-slate-200 justify-center">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 p-2 lg:p-10" id="grid">
         <div className="slide-parent flex flex-col space-y-10 overflow-y-auto bg-white rounded-md p-2 lg:p-4 h-[calc(82vh-2rem)]">
-          {slides.map((slide, index) => (
+          {slides.length && slides.map((slide, index) => (
             <div key={index} className="space-y-4">
               <div className="relative">
                 <div onClick={() => onClickSlide(index)}>
-                  <div className='slide-div'>
-                    <div
-                      style={{
-                        ...(background.type === 'solid' && { backgroundColor: background.value }),
-                        ...(background.type === 'gradient' && { backgroundImage: background.value }),
-                        ...(background.type === 'image' && {
-                          backgroundImage: `url(${background.value})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                        }),
-                      }}
-                      className="h-[80vh] lg:h-[70vh] flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
-                    >
-                      <div className='flex flex-col justify-center p-10 h-full'>
-                        <h2
-                          className="text-xl lg:text-2xl font-extrabold"
-                          style={{
-                            color: slide.title.color,
-                            fontFamily: slide.title.fontFamily,
-                          }}
-                        >
-                          {slide.title.text}
-                        </h2>
-                        <h5
-                          className="text-lg lg:text-lg mt-1 font-semibold"
-                          style={{
-                            color: slide.subtitle.color,
-                            fontFamily: slide.subtitle.fontFamily,
-                          }}
-                        >
-                          {slide.subtitle.text}
-                        </h5>
-                        <ul className="space-y-3 mt-4 lg:mt-6">
-                          {slide.content.map((item, idx) => (
-                            <li
-                              key={idx}
-                              style={{
-                                color: item.color,
-                                fontFamily: item.fontFamily,
-                              }}
-                            >
-                              ➢ {item.text}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                  <div
+                    style={{
+                      ...(background.type === 'solid' && { backgroundColor: background.value }),
+                      ...(background.type === 'gradient' && { backgroundImage: background.value }),
+                      ...(background.type === 'image' && {
+                        backgroundImage: `url(${background.value})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center center',
+                      }),
+                    }}
+                    // className="slide-div h-[95vh] w-[90vh] flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
+                  className="slide-div h-[80vh] w-[90vh] lg:h-[95vh] lg:w-auto flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
+                  >
+                    <div className='flex flex-col justify-center p-10 h-full'>
+                      <h2
+                        className="text-lg lg:text-xl font-extrabold"
+                        style={{
+                          color: slide.title.color,
+                          fontFamily: slide.title.fontFamily,
+                        }}
+                      >
+                        {slide.title.text}
+                      </h2>
+                      <h5
+                        className="lg:text-md mt-1 font-semibold"
+                        style={{
+                          color: slide.subtitle.color,
+                          fontFamily: slide.subtitle.fontFamily,
+                        }}
+                      >
+                        {slide.subtitle.text}
+                      </h5>
+                      <ul className="space-y-3 mt-4 lg:mt-6">
+                        {slide.content.map((item, idx) => (
+                          <li
+                            key={idx}
+                            style={{
+                              color: item.color,
+                              fontFamily: item.fontFamily,
+                            }}
+                          >
+                            ➢ {item.text}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
