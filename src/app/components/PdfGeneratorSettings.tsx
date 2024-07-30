@@ -81,11 +81,13 @@ const imageOptions = [
     '/assets/bg-10.png',
     '/assets/bg-12.png',
     '/assets/bg-13.png',
+    '/assets/bg-14.png',
+    '/assets/bg-15.png',
+    '/assets/bg-16.png',
+    '/assets/bg-17.png',
+    '/assets/bg-18.png',
     '/assets/new-book.png',
     '/assets/book.svg',
-    '/path/to/image4.jpg',
-    '/path/to/image5.jpg',
-    '/path/to/image6.jpg'
 ];
 
 const socialMediaPlatforms = [
