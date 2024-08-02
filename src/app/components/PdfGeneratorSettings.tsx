@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
+import { Card } from "@/app/components/ui/card";
 import { Label } from "@/app/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
 import { Input } from "@/app/components/ui/input";
@@ -8,7 +8,7 @@ import { Switch } from "@/app/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/components/ui/select";
 import { Button } from "@/app/components/ui/button";
 import { Download, Plus, Trash2 } from "lucide-react";
-import { Background, Slide, TextContent } from '../page';
+import { AuthorInfo, Background, Slide, TextContent } from '../page';
 import CustomColorInput from './CustomColorInput';
 
 const colorOptions = [
@@ -70,6 +70,9 @@ const gradientOptions = [
 ];
 
 const imageOptions = [
+    '/assets/bg-9.png',
+    '/assets/new-book.png',
+    '/assets/book.svg',
     '/assets/bg-1.png',
     '/assets/bg-2.png',
     '/assets/bg-4.png',
@@ -77,21 +80,19 @@ const imageOptions = [
     '/assets/bg-6.png',
     '/assets/bg-7.png',
     '/assets/bg-8.png',
-    '/assets/bg-9.png',
     '/assets/bg-10.png',
-    '/assets/bg-12.png',
+    // '/assets/bg-12.png',
     '/assets/bg-13.png',
     '/assets/bg-14.png',
     '/assets/bg-15.png',
     '/assets/bg-16.png',
     '/assets/bg-17.png',
     '/assets/bg-18.png',
-    '/assets/new-book.png',
-    '/assets/book.svg',
+
 ];
 
 const socialMediaPlatforms = [
-    { id: 'twitter', name: 'Twitter' },
+    { id: 'x', name: 'X' },
     { id: 'linkedin', name: 'LinkedIn' },
     { id: 'github', name: 'GitHub' },
     { id: 'instagram', name: 'Instagram' },
@@ -106,13 +107,14 @@ interface PdfGeneratorSettingsProps {
     activeTab: string;
     onChangeTab: (tab: string) => void;
     activeBackground: string;
+    authorInfo: AuthorInfo;
+    updateAuthorInfo: (newInfo: Partial<AuthorInfo>) => void;
 }
 
 const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide,
-    currentSlideIndex, updateBackground, activeTab, onChangeTab, activeBackground }) => {
+    currentSlideIndex, updateBackground, activeTab, onChangeTab, activeBackground, authorInfo, updateAuthorInfo }) => {
     const [backgroundType, setBackgroundType] = useState<'solid' | 'gradient' | 'image'>('gradient');
     const [showAuthorProfile, setShowAuthorProfile] = useState(true);
-    const [selectedSocialMedia, setSelectedSocialMedia] = useState('');
     const [contentEntries, setContentEntries] = useState<TextContent[]>([]);
 
     useEffect(() => {
@@ -352,19 +354,39 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                             <>
                                 <div>
                                     <Label htmlFor="authorName">Author Name</Label>
-                                    <Input id="authorName" placeholder="Enter your name" className="mt-1" />
+                                    <Input
+                                        id="authorName"
+                                        placeholder="Enter your name" className="mt-1"
+                                        value={authorInfo.name}
+                                        onChange={(e) => updateAuthorInfo({ name: e.target.value })}
+                                    />
                                 </div>
 
                                 <div>
                                     <Label htmlFor="authorProfilePic">Profile Picture</Label>
-                                    <Input id="authorProfilePic" type="file" accept="image/*" className="mt-1" />
+                                    <Input
+                                        id="authorProfilePic"
+                                        type="file"
+                                        accept="image/*"
+                                        className="mt-1"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => {
+                                                    updateAuthorInfo({ profilePicture: reader.result as string });
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                    />
                                 </div>
 
                                 <div>
                                     <Label>Social Media Handle</Label>
                                     <RadioGroup
-                                        onValueChange={setSelectedSocialMedia}
-                                        value={selectedSocialMedia}
+                                        onValueChange={(value) => updateAuthorInfo({ socialMediaPlatform: value })}
+                                        value={authorInfo.socialMediaPlatform}
                                         className="mt-2"
                                     >
                                         {socialMediaPlatforms.map((platform) => (
@@ -374,10 +396,12 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                             </div>
                                         ))}
                                     </RadioGroup>
-                                    {selectedSocialMedia && (
+                                    {authorInfo.socialMediaPlatform && (
                                         <Input
-                                            placeholder={`Enter your ${socialMediaPlatforms.find(p => p.id === selectedSocialMedia)?.name} handle`}
+                                            placeholder={`Enter your ${socialMediaPlatforms.find(p => p.id === authorInfo.socialMediaPlatform)?.name} handle`}
                                             className="mt-2"
+                                            value={authorInfo.socialMediaHandle}
+                                            onChange={(e) => updateAuthorInfo({ socialMediaHandle: e.target.value })}
                                         />
                                     )}
                                 </div>

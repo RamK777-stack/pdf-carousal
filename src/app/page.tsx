@@ -6,6 +6,8 @@ import PdfGeneratorSettings from './components/PdfGeneratorSettings';
 import { useState } from 'react';
 import { Button } from './components/ui/button';
 import { PlusCircle, Trash2 } from 'lucide-react';
+import SocialMediaIcon from './components/SocialMediaIcon';
+
 
 export interface TextContent {
   text: string;
@@ -51,12 +53,25 @@ const dummySlide: Slide = {
   content: [{ text: "Your content", color: '#000000', fontFamily: 'Arial' }]
 };
 
+export interface AuthorInfo {
+  name: string;
+  profilePicture: string;
+  socialMediaPlatform: string;
+  socialMediaHandle: string;
+}
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState('background');
   const [slides, setSlides] = useState<Slide[]>(initialSlides);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [background, setBackground] = useState<Background>({ type: 'gradient', value: 'linear-gradient(to right, #e0c3fc, #8ec5fc)' });
   const [activeBackground, setActiveBackground] = useState<string>('linear-gradient(to right, #e0c3fc, #8ec5fc)');
+  const [authorInfo, setAuthorInfo] = useState<AuthorInfo>({
+    name: 'Ram',
+    profilePicture: '',
+    socialMediaPlatform: 'twitter',
+    socialMediaHandle: '@ram'
+  });
 
   const downloadImage = async () => {
     const elements = document.getElementsByClassName('slide-div');
@@ -143,8 +158,9 @@ export default function Home() {
     setActiveBackground(background.value)
   }
 
-  console.log(slides)
-
+  const updateAuthorInfo = (newInfo: Partial<AuthorInfo>) => {
+    setAuthorInfo(prevInfo => ({ ...prevInfo, ...newInfo }));
+  };
 
   return (
     <main className="flex flex-col min-h-screen px-4 py-2 md:px-6 md:py-2 lg:px-12 lg:py-6 bg-slate-200 justify-center">
@@ -165,9 +181,29 @@ export default function Home() {
                       }),
                     }}
                     // className="slide-div h-[95vh] w-[90vh] flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
-                  className="slide-div h-[80vh] w-[90vh] lg:h-[95vh] lg:w-auto flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
+                    className="slide-div h-[80vh] w-[90vh] lg:h-[95vh] lg:w-auto flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
                   >
                     <div className='flex flex-col justify-center p-10 h-full'>
+                      {authorInfo.name && (
+                        <div className="mb-4 flex items-center">
+                          {authorInfo.profilePicture && (
+                            <img
+                              src={authorInfo.profilePicture}
+                              alt={authorInfo.name}
+                              className="w-10 h-10 rounded-full mr-2"
+                            />
+                          )}
+                          <div>
+                            <p className="font-bold">{authorInfo.name}</p>
+                            {authorInfo.socialMediaHandle && (
+                              <p className="text-sm flex items-center">
+                                <SocialMediaIcon platform={authorInfo.socialMediaPlatform} size={16} className="mr-1" />
+                                {authorInfo.socialMediaHandle}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       <h2
                         className="text-lg lg:text-xl font-extrabold"
                         style={{
@@ -237,6 +273,8 @@ export default function Home() {
             currentSlideIndex={currentSlideIndex}
             updateBackground={updateBackground}
             activeBackground={activeBackground}
+            authorInfo={authorInfo}
+            updateAuthorInfo={updateAuthorInfo}
           />
         </div>
       </div>
