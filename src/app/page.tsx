@@ -66,11 +66,12 @@ export default function Home() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [background, setBackground] = useState<Background>({ type: 'gradient', value: 'linear-gradient(to right, #e0c3fc, #8ec5fc)' });
   const [activeBackground, setActiveBackground] = useState<string>('linear-gradient(to right, #e0c3fc, #8ec5fc)');
+  const [showAuthorProfile, setShowAuthorProfile] = useState(true);
   const [authorInfo, setAuthorInfo] = useState<AuthorInfo>({
-    name: 'Ram',
+    name: '',
     profilePicture: '',
-    socialMediaPlatform: 'twitter',
-    socialMediaHandle: '@ram'
+    socialMediaPlatform: 'none',
+    socialMediaHandle: ''
   });
 
   const downloadImage = async () => {
@@ -184,20 +185,20 @@ export default function Home() {
                     className="slide-div h-[80vh] w-[90vh] lg:h-[95vh] lg:w-auto flex flex-col px-4 lg:px-8 text-black justify-center rounded-sm bg-no-repeat text-xs lg:text-base"
                   >
                     <div className='flex flex-col justify-center p-10 h-full'>
-                      {authorInfo.name && (
+                      {showAuthorProfile && (
                         <div className="mb-4 flex items-center">
                           {authorInfo.profilePicture && (
                             <img
                               src={authorInfo.profilePicture}
                               alt={authorInfo.name}
-                              className="w-10 h-10 rounded-full mr-2"
+                              className="w-12 h-12 rounded-full mr-2"
                             />
                           )}
                           <div>
                             <p className="font-bold">{authorInfo.name}</p>
                             {authorInfo.socialMediaHandle && (
                               <p className="text-sm flex items-center">
-                                <SocialMediaIcon platform={authorInfo.socialMediaPlatform} size={16} className="mr-1" />
+                                {authorInfo.socialMediaPlatform !== 'none' && <SocialMediaIcon platform={authorInfo.socialMediaPlatform} size={16} className="mr-1" />}
                                 {authorInfo.socialMediaHandle}
                               </p>
                             )}
@@ -275,6 +276,8 @@ export default function Home() {
             activeBackground={activeBackground}
             authorInfo={authorInfo}
             updateAuthorInfo={updateAuthorInfo}
+            showAuthorProfile={showAuthorProfile}
+            setShowAuthorProfile={setShowAuthorProfile}
           />
         </div>
       </div>

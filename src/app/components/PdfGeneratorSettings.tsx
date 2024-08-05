@@ -96,6 +96,7 @@ const socialMediaPlatforms = [
     { id: 'linkedin', name: 'LinkedIn' },
     { id: 'github', name: 'GitHub' },
     { id: 'instagram', name: 'Instagram' },
+    { id: 'none', name: 'None' },
 ];
 
 interface PdfGeneratorSettingsProps {
@@ -109,12 +110,15 @@ interface PdfGeneratorSettingsProps {
     activeBackground: string;
     authorInfo: AuthorInfo;
     updateAuthorInfo: (newInfo: Partial<AuthorInfo>) => void;
+    showAuthorProfile: boolean;
+    setShowAuthorProfile: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDownload, updateSlideSettings, currentSlide,
-    currentSlideIndex, updateBackground, activeTab, onChangeTab, activeBackground, authorInfo, updateAuthorInfo }) => {
+    currentSlideIndex, updateBackground, activeTab, onChangeTab, activeBackground, authorInfo, updateAuthorInfo,
+    showAuthorProfile, setShowAuthorProfile
+}) => {
     const [backgroundType, setBackgroundType] = useState<'solid' | 'gradient' | 'image'>('gradient');
-    const [showAuthorProfile, setShowAuthorProfile] = useState(true);
     const [contentEntries, setContentEntries] = useState<TextContent[]>([]);
 
     useEffect(() => {
@@ -396,7 +400,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                                             </div>
                                         ))}
                                     </RadioGroup>
-                                    {authorInfo.socialMediaPlatform && (
+                                    {(
                                         <Input
                                             placeholder={`Enter your ${socialMediaPlatforms.find(p => p.id === authorInfo.socialMediaPlatform)?.name} handle`}
                                             className="mt-2"
