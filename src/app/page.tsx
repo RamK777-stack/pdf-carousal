@@ -8,6 +8,7 @@ import { Button } from './components/ui/button';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import SocialMediaIcon from './components/SocialMediaIcon';
 import Footer from './components/Footer';
+import BuyMeCoffeeButton from './components/BuyMeCoffeeButton';
 
 
 export interface TextContent {
@@ -283,7 +284,10 @@ export default function Home() {
         </div>
       </div>
       <div className='flex flex-col justify-center items-center'>
-        <a href="https://www.producthunt.com/posts/pdf-carousel-generator?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-pdf&#0045;carousel&#0045;generator" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=477081&theme=light" alt="PDF&#0032;Carousel&#0032;generator - Create&#0032;Stunning&#0032;LinkedIn&#0032;PDF&#0032;Posts&#0032;easily&#0032; | Product Hunt" style={{ width: "250px", height: "54px" }} width="250" height="54" /></a>
+        <div className='flex flex-col lg:flex-row md:flex-row gap-2'>
+          <a href="https://www.producthunt.com/posts/pdf-carousel-generator?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-pdf&#0045;carousel&#0045;generator" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=477081&theme=light" alt="PDF&#0032;Carousel&#0032;generator - Create&#0032;Stunning&#0032;LinkedIn&#0032;PDF&#0032;Posts&#0032;easily&#0032; | Product Hunt" style={{ width: "200px", height: "44px" }} width="250" height="54" /></a>
+          <BuyMeCoffeeButton />
+        </div>
         <Footer />
       </div>
     </main>
