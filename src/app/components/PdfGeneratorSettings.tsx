@@ -298,7 +298,7 @@ const PdfGeneratorSettings: React.FC<PdfGeneratorSettingsProps> = ({ onClickDown
                             {contentEntries.map((entry, index) => (
                                 <Card key={index} className="p-4">
                                     <div className="flex justify-between items-start mb-2">
-                                        <Label>Content {index + 1}</Label>
+                                        <Label>Line {index + 1}</Label>
                                         <Button variant="ghost" size="sm" onClick={() => removeContentEntry(index)}>
                                             <Trash2 className="h-4 w-4" />
                                         </Button>
